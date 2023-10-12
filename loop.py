@@ -1,6 +1,6 @@
 import cv2
 import mediapipe as mp
-import pyautogui
+import pydirectinput
 from scipy.spatial import distance as dist
 
 CAMERA = 0 # Usually 0, depends on input device(s)
@@ -43,15 +43,15 @@ with mp.solutions.face_mesh.FaceMesh(
 
       if (eyeL_ar < EYE_BLINK_HEIGHT) and (eyeR_ar > EYE_SQUINT_HEIGHT):
         print("L squint: LEFT")
-        pyautogui.move(-MOUSE_DELTA, 0)
+        pydirectinput.move(-MOUSE_DELTA, 0, relative=True)
       elif (eyeR_ar < EYE_BLINK_HEIGHT) and (eyeL_ar > EYE_SQUINT_HEIGHT):
         print("R squint: RIGHT")
-        pyautogui.move(MOUSE_DELTA, 0)
+        pydirectinput.move(MOUSE_DELTA, 0, relative=True)
       elif eyeA_ar > EYE_BULGE_HEIGHT:
         print("big eyes: UP")
-        pyautogui.move(0, -MOUSE_DELTA)
+        pydirectinput.move(0, -MOUSE_DELTA, relative=True)
       elif (eyeL_ar < EYE_SQUINT_HEIGHT) and (eyeR_ar < EYE_SQUINT_HEIGHT):
         print("both squint: DOWN")
-        pyautogui.move(0, MOUSE_DELTA)
+        pydirectinput.move(0, MOUSE_DELTA, relative=True)
 
 cap.release()
