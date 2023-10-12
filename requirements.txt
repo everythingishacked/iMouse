@@ -1,5 +1,5 @@
 mediapipe==0.10.7; platform_system != "Darwin" and platform.machine != 'arm64'
 mediapipe-silicon>=0.8.9; platform_system == "Darwin" and platform.machine == 'arm64'
 opencv_python==4.7.0.68
-PyAutoGUI==0.9.54
+PyDirectInput==1.0.4
 scipy==1.11.3
