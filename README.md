@@ -1,6 +1,8 @@
 ## iMouse
 
-### Pan and tilt with your mouse using eye winks.
+### Pan and tilt with your mouse using eye motions.
+
+Works on Windows using [PyDirectInput](https://github.com/learncodebygaming/pydirectinput). Try replacing with [PyAutoGUI](https://pyautogui.readthedocs.io/en/latest/) for other cross-platform support.
 
 Run with: `python loop.py`
 
