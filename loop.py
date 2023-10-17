@@ -13,12 +13,27 @@ EYE_SQUINT_HEIGHT = .2
 
 WAIT_FRAMES = 10
 
+NONE, LEFT, RIGHT, UP, DOWN = 0, 1, 2, 3, 4
+active_gesture = NONE
+frames_waiting = 0
+
 def get_aspect_ratio(top, bottom, right, left):
   height = dist.euclidean([top.x, top.y], [bottom.x, bottom.y])
   width = dist.euclidean([right.x, right.y], [left.x, left.y])
   return height / width
 
 cap = cv2.VideoCapture(CAMERA)
+
+def update_gesture(direction):
+  global active_gesture, frames_waiting
+
+  if active_gesture == direction:
+    frames_waiting += 1
+  else:
+    active_gesture = direction
+    frames_waiting = 0
+  if frames_waiting > WAIT_FRAMES:
+    return True
 
 with mp.solutions.face_mesh.FaceMesh(
     max_num_faces=1,
@@ -43,15 +58,21 @@ with mp.solutions.face_mesh.FaceMesh(
 
       if (eyeL_ar < EYE_BLINK_HEIGHT) and (eyeR_ar > EYE_SQUINT_HEIGHT):
         print("L squint: LEFT")
-        pydirectinput.move(-MOUSE_DELTA, 0, relative=True)
+        if update_gesture(LEFT):
+          pydirectinput.move(-MOUSE_DELTA, 0, relative=True)
       elif (eyeR_ar < EYE_BLINK_HEIGHT) and (eyeL_ar > EYE_SQUINT_HEIGHT):
         print("R squint: RIGHT")
-        pydirectinput.move(MOUSE_DELTA, 0, relative=True)
+        if update_gesture(RIGHT):
+          pydirectinput.move(MOUSE_DELTA, 0, relative=True)
       elif eyeA_ar > EYE_BULGE_HEIGHT:
-        print("big eyes: UP")
-        pydirectinput.move(0, -MOUSE_DELTA, relative=True)
+        if update_gesture(UP):
+          print("big eyes: UP")
+          pydirectinput.move(0, -MOUSE_DELTA, relative=True)
       elif (eyeL_ar < EYE_SQUINT_HEIGHT) and (eyeR_ar < EYE_SQUINT_HEIGHT):
-        print("both squint: DOWN")
-        pydirectinput.move(0, MOUSE_DELTA, relative=True)
+        if update_gesture(DOWN):
+          print("both squint: DOWN")
+          pydirectinput.move(0, MOUSE_DELTA, relative=True)
+      else:
+        active_gesture = NONE
 
 cap.release()
